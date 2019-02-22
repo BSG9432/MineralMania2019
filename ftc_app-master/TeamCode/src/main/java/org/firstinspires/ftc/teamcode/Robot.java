@@ -8,13 +8,15 @@ public class Robot {
     public DcMotor frontLeft, frontRight, backLeft, backRight;
     public DcMotor[] motors = {frontLeft, frontRight, backLeft, backRight};
     public String[] motorNames = {"frontLeft", "frontRight", "backLeft", "backRight"};
-
+    public HardwareMap ahwMap;
 
     public Robot() {
 
     }
 
-    public void init(HardwareMap hMap) {
+    public void (HardwareMap hMap) {
+        ahwMap = hMap;
+
         for (int i = 0; i < motors.length; i++) {
             motors[i] = hMap.dcMotor.get(motorNames[i]);
         }
