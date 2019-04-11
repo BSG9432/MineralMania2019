@@ -65,15 +65,14 @@ public class districtsTeleOpA extends OpMode {
         else {
             frontRight.setPower(0);
             backRight.setPower(0);
-
         }
 
         //intake
-        if (gamepad1.dpad_up) {
-            intake.setPower(.5);
+        if (gamepad1.right_bumper) {
+            intake.setPower(.7);
         }
-        else if (gamepad1.dpad_down) {
-            intake.setPower(-.5);
+        else if (gamepad1.left_bumper) {
+            intake.setPower(-.7);
         }
         else {
             intake.setPower(0);
@@ -81,21 +80,34 @@ public class districtsTeleOpA extends OpMode {
 
         //hanging
         if (Math.abs(gamepad1.right_trigger) > .1) {
-            hang.setPower(gamepad1.right_trigger);
-        } else if (Math.abs(gamepad1.left_trigger) > .1) {
-            hang.setPower(-gamepad1.left_trigger);
+            hang.setPower(1);
+        }
+        else {
+            hang.setPower(0);
+        }
+        if (Math.abs(gamepad1.left_trigger) > .1) {
+            hang.setPower(-1);
         } else {
             hang.setPower(0);
         }
 
         //yeeting the Mobile Cargo Bay
         if (gamepad1.a) {
-            rightPan.setPosition(.75);
-            leftPan.setPosition(.25);
+            rightPan.setPosition(.5);
+            leftPan.setPosition(.5);
         }
         else {
-            rightPan.setPosition(0);
-            leftPan.setPosition(1);
+            rightPan.getPosition();
+            leftPan.getPosition();
+
+        }
+        if (gamepad1.y)  {
+            rightPan.setPosition(.9);
+            leftPan.setPosition(.1);
+        }
+        else {
+            rightPan.getPosition();
+            leftPan.getPosition();
         }
 
         }
