@@ -3,11 +3,13 @@ package org.firstinspires.ftc.teamcode.RoverRuckus2018_19.Autonomous;
 //import com.disnodeteam.dogecv.CameraViewDisplay;
 //import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+@Disabled
 @Autonomous (name = "MecanumDogeCV")
 public class MecanumDogeCV extends LinearOpMode {
     public DcMotor frontRight;

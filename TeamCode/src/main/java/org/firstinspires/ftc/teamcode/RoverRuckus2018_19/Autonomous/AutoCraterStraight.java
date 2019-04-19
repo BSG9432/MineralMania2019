@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.RoverRuckus2018_19.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
+@Disabled
 @Autonomous (name = "AutoCraterStraight")//If we're on the crater side; it'll just go straight
 public class AutoCraterStraight extends LinearOpMode {
     public DcMotor frontRight;

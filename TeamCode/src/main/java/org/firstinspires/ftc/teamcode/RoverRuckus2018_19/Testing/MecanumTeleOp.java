@@ -1,14 +1,14 @@
-package org.firstinspires.ftc.teamcode.RoverRuckus2018_19.TeleOp;
+package org.firstinspires.ftc.teamcode.RoverRuckus2018_19.Testing;
 
 //import com.disnodeteam.dogecv.CameraViewDisplay;
 //import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-//import com.qualcomm.hardware.bosch.BNO055IMU;
-//import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-//import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Disabled
 @TeleOp (name = "MecanumTeleOp")

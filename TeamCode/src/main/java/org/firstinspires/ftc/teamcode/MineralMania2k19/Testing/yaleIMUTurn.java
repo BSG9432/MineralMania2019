@@ -49,43 +49,43 @@ public class yaleIMUTurn extends LinearOpMode {
 
     }
     private void resetAngle()
-    {
-        imuAngle = 0;
-    }
+        {
+            imuAngle = 0;
+        }
 
-    public double getHeading() {
+        public double getHeading() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC,
                 AxesOrder.ZYX, AngleUnit.DEGREES);
         double heading = angles.firstAngle;
         return heading;
     }
-    private void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
+        private void rotate(int degrees, double power)
+        {
+            double  leftPower, rightPower;
 
-        // restart imu movement tracking.
-        resetAngle();
+            // restart imu movement tracking.
+            resetAngle();
 
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
+            // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+            // clockwise (right).
 
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = -power;
-            rightPower = 0;
-        }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = 0;
-            rightPower = -power;
-        }
-        else return;
+            if (degrees < 0)
+            {   // turn right.
+                leftPower = -power;
+                rightPower = 0;
+            }
+            else if (degrees > 0)
+            {   // turn left.
+                leftPower = 0;
+                rightPower = -power;
+            }
+            else return;
 
-        // set power to rotate.
-        frontLeft.setPower(leftPower);
-        backLeft.setPower(leftPower);
-        frontRight.setPower(rightPower);
-        backRight.setPower(rightPower);
+            // set power to rotate.
+            frontLeft.setPower(leftPower);
+            backLeft.setPower(leftPower);
+            frontRight.setPower(rightPower);
+            backRight.setPower(rightPower);
 
         // rotate until turn is completed.
         if (degrees < 0)
