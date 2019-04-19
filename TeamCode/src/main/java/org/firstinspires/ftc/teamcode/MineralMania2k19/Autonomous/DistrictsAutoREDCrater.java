@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous;
 
+import android.drm.DrmRights;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,8 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
-@Autonomous(name="DistrictsAutoBLUECrater", group="Pushbot")
-public class DistrictsAutoBLUECrater extends LinearOpMode {
+@Autonomous(name="DistrictsAutoREDCrater", group="Pushbot")
+public class DistrictsAutoREDCrater extends LinearOpMode {
     /* Declare OpMode members. */
 
     public DcMotor frontRight;
@@ -120,15 +122,17 @@ public class DistrictsAutoBLUECrater extends LinearOpMode {
 
         encoderDrive(DRIVE_SPEED, -5, 5, 2.0);
         //NOTA BENE TO TEST THIS ROTATION
-        rotate(45, .5);
-        encoderDrive(DRIVE_SPEED, 61, -61, 6.5);
-        rotate(90,.5);
-        encoderDrive(DRIVE_SPEED, -65, 65, 7.5);
+        rotate(-90, .5);
+        encoderDrive(DRIVE_SPEED, -20, 20, 4.5);
+        rotate(45,.5);
+        encoderDrive(DRIVE_SPEED, -13, 13, 5.5);
+        rotate(-90, .5);
+        encoderDrive(DRIVE_SPEED, -63, 63, 7.0);
 
         intake.setPower(-.7);
         sleep(1500);
 
-        encoderDrive(DRIVE_SPEED,105, -105, 8.5);
+        encoderDrive(DRIVE_SPEED,110, -110, 8.5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -216,8 +220,8 @@ public class DistrictsAutoBLUECrater extends LinearOpMode {
     }
 
     public void lift(double speed,
-                             double inches,
-                             double timeoutS) {
+                     double inches,
+                     double timeoutS) {
         int newHangTarget;
 
         // Ensure that the opmode is still active

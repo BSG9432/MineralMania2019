@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
-
+//Oh this was the one I made when I finally figured out encoders
 @Autonomous(name="DistrictsAutoA", group="Pushbot")
 public class DistrictsAuto extends LinearOpMode {
     /* Declare OpMode members. */

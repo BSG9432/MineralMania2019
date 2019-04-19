@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
-@Autonomous(name="DistrictsAutoBLUECrater", group="Pushbot")
-public class DistrictsAutoBLUECrater extends LinearOpMode {
+@Autonomous(name="DistrictsAutoREDDepot", group="Pushbot")
+public class DistrictsAutoREDDepot extends LinearOpMode {
     /* Declare OpMode members. */
 
     public DcMotor frontRight;
@@ -118,17 +118,22 @@ public class DistrictsAutoBLUECrater extends LinearOpMode {
 
         lift(1,24, 5.0);
 
+        //going out of latch
         encoderDrive(DRIVE_SPEED, -5, 5, 2.0);
         //NOTA BENE TO TEST THIS ROTATION
-        rotate(45, .5);
-        encoderDrive(DRIVE_SPEED, 61, -61, 6.5);
-        rotate(90,.5);
-        encoderDrive(DRIVE_SPEED, -65, 65, 7.5);
+        rotate(-95, .5);
+        encoderDrive(DRIVE_SPEED, -35, 35, 5.0);
+        rotate(-45,.5);
+        encoderDrive(DRIVE_SPEED, 50, -50, 7.0);
+        rotate(-90, .5);
+        encoderDrive(DRIVE_SPEED,-13, 13, 2.0);
+        rotate(-90,.5);
+        encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
 
         intake.setPower(-.7);
         sleep(1500);
 
-        encoderDrive(DRIVE_SPEED,105, -105, 8.5);
+        encoderDrive(DRIVE_SPEED,110, -110, 8.5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -216,8 +221,8 @@ public class DistrictsAutoBLUECrater extends LinearOpMode {
     }
 
     public void lift(double speed,
-                             double inches,
-                             double timeoutS) {
+                     double inches,
+                     double timeoutS) {
         int newHangTarget;
 
         // Ensure that the opmode is still active
