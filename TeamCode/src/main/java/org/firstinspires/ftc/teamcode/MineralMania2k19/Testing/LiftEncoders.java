@@ -30,11 +30,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="LiftEncoder", group="")
+@Autonomous(name="JetEncoders", group="")
 //6 INCHES UP
 public class LiftEncoders extends LinearOpMode  {
     /* Declare OpMode members. */
@@ -72,29 +73,33 @@ public class LiftEncoders extends LinearOpMode  {
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
+        /*going backwards results in negative ticks, which aren't possible.
+        to combat this, we must flip the direction of the motor so that using encoders
+        to go backwards is possible.
+        */
+        hang.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hang.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                backLeft.getCurrentPosition(),
-                backRight.getCurrentPosition(),
-                frontRight.getCurrentPosition(),
-                frontLeft.getCurrentPosition());
+        telemetry.addData("Path0", hang.getCurrentPosition());
         telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(.5,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(.5,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(.5, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        liftEncoders(1,  6,  10.0);  // S1: Up 6 Inches with 10 Sec timeout
+
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
@@ -106,32 +111,20 @@ public class LiftEncoders extends LinearOpMode  {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+    public void liftEncoders(double speed, double numOfInches, double timeoutS) {
+        int target;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
             // Determine new target position, and pass to motor controller
-            newLeftTarget = frontLeft.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = backRight.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            target = hang.getCurrentPosition() + (int)(numOfInches * COUNTS_PER_INCH);
 
-            frontLeft.setTargetPosition(newLeftTarget);
-            backLeft.setTargetPosition(newLeftTarget);
-            backRight.setTargetPosition(newRightTarget);
-            frontRight.setTargetPosition(newRightTarget);
+            hang.setTargetPosition(target);
+
             // Turn On RUN_TO_POSITION
-            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             // reset the timeout time and start motion.
             runtime.reset();
-            frontRight.setPower(Math.abs(speed));
-            backRight.setPower(Math.abs(speed));
-            frontLeft.setPower(Math.abs(speed));
-            backLeft.setPower(Math.abs(speed));
+            hang.setPower(Math.abs(speed));
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
             // its target position, the motion will stop.  This is "safer" in the event that the robot will
@@ -139,27 +132,17 @@ public class LiftEncoders extends LinearOpMode  {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (frontLeft.isBusy() && backLeft.isBusy()) & backRight.isBusy() & frontRight.isBusy()) {
+                    (runtime.seconds() < timeoutS) && hang.isBusy()) {
                 // Display it for the driver.
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                        frontRight.getCurrentPosition(),
-                        backRight.getCurrentPosition(),
-                        frontLeft.getCurrentPosition(),
-                        backLeft.getCurrentPosition());
+                telemetry.addData("Path1",   target);
+                telemetry.addData("Path2", hang.getCurrentPosition());
                 telemetry.update();
             }
             // Stop all motion;
-            frontLeft.setPower(0);
-            backLeft.setPower(0);
-            frontRight.setPower(0);
-            backRight.setPower(0);
+            hang.setPower(0);
             // Turn off RUN_TO_POSITION
-            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            hang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         }
     }
 }

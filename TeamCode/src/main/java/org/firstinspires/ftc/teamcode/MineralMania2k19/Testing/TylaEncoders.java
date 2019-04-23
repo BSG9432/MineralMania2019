@@ -72,8 +72,7 @@ public class TylaEncoders extends LinearOpMode {
 
     /* Declare OpMode members. */
     public DcMotor frontLeft, frontRight, backLeft, backRight;
-    int x = 5;
-    double y = 10.12345678;
+
 
     private ElapsedTime     runtime = new ElapsedTime();
 
