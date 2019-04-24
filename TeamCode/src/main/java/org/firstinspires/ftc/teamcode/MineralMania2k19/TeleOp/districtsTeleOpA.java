@@ -19,19 +19,23 @@ public class districtsTeleOpA extends OpMode {
     public DcMotor hang;
     public Servo leftPan;
     public Servo rightPan;
+
+   // public final double NOTHUG = ;
+    // public final double HUG = ;
+
 //LETS GO BOYS
 //YEEEEE
 
     @Override
     public void init() {
         frontRight = hardwareMap.dcMotor.get("frontRight");
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight = hardwareMap.dcMotor.get("backRight");
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontLeft = hardwareMap.dcMotor.get("frontLeft");
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft = hardwareMap.dcMotor.get("backLeft");
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         intake = hardwareMap.dcMotor.get("intake");
         intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -45,15 +49,15 @@ public class districtsTeleOpA extends OpMode {
         leftPan.setPosition(0);
         rightPan.setPosition(1);
     }
+
     @Override
-    public void loop () {
+    public void loop() {
 
         //for the joysticks
         if (Math.abs(gamepad1.left_stick_y) > .1) {
             frontLeft.setPower(gamepad1.left_stick_y);
             backLeft.setPower(gamepad1.left_stick_y);
-        }
-        else {
+        } else {
             frontLeft.setPower(0);
             backLeft.setPower(0);
         }
@@ -61,21 +65,18 @@ public class districtsTeleOpA extends OpMode {
         if (Math.abs(gamepad1.right_stick_y) > .1) {
             frontRight.setPower(-gamepad1.right_stick_y);
             backRight.setPower(-gamepad1.right_stick_y);
-        }
-        else {
+        } else {
             frontRight.setPower(0);
             backRight.setPower(0);
 
         }
 
         //intake
-        if (gamepad1.dpad_up) {
+        if (gamepad1.right_bumper) {
             intake.setPower(.5);
-        }
-        else if (gamepad1.dpad_down) {
+        } else if (gamepad1.left_bumper) {
             intake.setPower(-.5);
-        }
-        else {
+        } else {
             intake.setPower(0);
         }
 
@@ -90,14 +91,13 @@ public class districtsTeleOpA extends OpMode {
 
         //yeeting the Mobile Cargo Bay
         if (gamepad1.a) {
-            rightPan.setPosition(.75);
-            leftPan.setPosition(.25);
-        }
-        else {
-            rightPan.setPosition(0);
-            leftPan.setPosition(1);
+            rightPan.setPosition(.65);
+            leftPan.setPosition(.35);
         }
 
+        if (gamepad1.y) {
+            rightPan.setPosition(.15);
+            leftPan.setPosition(.55);
         }
+    }
 }
-
