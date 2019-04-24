@@ -39,8 +39,8 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.65;
-    static final double TURN_SPEED = 0.5;
+    static final double DRIVE_SPEED = .55;
+    static final double TURN_SPEED = 0.3;
 
 
     @Override
@@ -116,18 +116,20 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
 
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
-        lift(1,24, 5.0);
 
         //going out of latch
-        encoderDrive(DRIVE_SPEED, -5, 5, 2.0);
+        encoderDrive(DRIVE_SPEED, -3, 3, 2.0);
         //NOTA BENE TO TEST THIS ROTATION
-        rotate(-95, .5);
-        encoderDrive(DRIVE_SPEED, -35, 35, 5.0);
-        rotate(-45,.5);
+        rotate(95, .4);
+        encoderDrive(DRIVE_SPEED, -25, 25, 5.0);
+
+        sleep(2000);
+        rotate(45, .5);
+
         encoderDrive(DRIVE_SPEED, 50, -50, 7.0);
-        rotate(-90, .5);
+        rotate(90, .4);
         encoderDrive(DRIVE_SPEED,-13, 13, 2.0);
-        rotate(-90,.5);
+        rotate(90,.4);
         encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
 
         intake.setPower(-.7);
@@ -296,12 +298,12 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         if (degrees < 0)
         {   // turn right.
             leftPower = -power;
-            rightPower = 0;
+            rightPower = -.3;
         }
         else if (degrees > 0)
         {   // turn left.
-            leftPower = 0;
-            rightPower = -power;
+            leftPower = .3;
+            rightPower = power;
         }
         else return;
 
