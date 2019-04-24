@@ -116,7 +116,6 @@ public class DistrictsAutoBLUECrater extends LinearOpMode {
 
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
-        lift(1,24, 5.0);
 
         encoderDrive(DRIVE_SPEED, -5, 5, 2.0);
         //NOTA BENE TO TEST THIS ROTATION

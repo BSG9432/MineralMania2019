@@ -116,7 +116,6 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
 
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
-        lift(1,24, 5.0);
 
         //going out of latch
         encoderDrive(DRIVE_SPEED, -5, 5, 2.0);
