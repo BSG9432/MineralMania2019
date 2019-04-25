@@ -108,6 +108,8 @@ public class DistrictsAutoBLUECrater extends LinearOpMode {
         AutoTransitioner.transitionOnStop(this, "OOFdistrictsTeleOp");
 
         // Wait for the game to start (driver presses PLAY)
+        AutoTransitioner.transitionOnStop(this,"OOFdistrictsTeleOp" );
+
         waitForStart();
 
 

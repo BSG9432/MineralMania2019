@@ -42,6 +42,13 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
     static final double DRIVE_SPEED = .55;
     static final double TURN_SPEED = 0.3;
 
+    //HANG CONSTANTS
+    static final double     DRIVE_GEAR_REDUCTION_HANG    = 3.0 ;     // GEAR RATIO
+    static final double     WHEEL_DIAMETER_INCHES_HANG   = .82 ;     // WHEEL DIAMETER, THIS CASE PINION GEAR
+    static final double COUNTS_PER_INCH_HANG = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION_HANG) /
+            (WHEEL_DIAMETER_INCHES_HANG * 3.1415);
+
+
 
     @Override
     public void runOpMode() {
@@ -115,6 +122,8 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
         //NOTA BENE TO ADJUST THE TIMEOUTS
+
+        //coming down from latch
 
 
         //going out of latch
@@ -222,29 +231,20 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         }
     }
 
-    public void lift(double speed,
-                     double inches,
-                     double timeoutS) {
-        int newHangTarget;
-
+    public void liftEncoders(double speed, double numOfInches, double timeoutS) {
+        int target;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
             // Determine new target position, and pass to motor controller
-            newHangTarget = hang.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+            target = hang.getCurrentPosition() + (int)(numOfInches * COUNTS_PER_INCH_HANG);
 
-
-            hang.setTargetPosition(newHangTarget);
+            hang.setTargetPosition(target);
 
             // Turn On RUN_TO_POSITION
             hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-
             // reset the timeout time and start motion.
             runtime.reset();
             hang.setPower(Math.abs(speed));
-
-
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
             // its target position, the motion will stop.  This is "safer" in the event that the robot will
@@ -252,25 +252,17 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (hang.isBusy())) {
-
+                    (runtime.seconds() < timeoutS) && hang.isBusy()&& hang.getCurrentPosition()<target) {
                 // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newHangTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        hang.getCurrentPosition());
-
+                telemetry.addData("Target Encoder Value: ",   target);
+                telemetry.addData("Current Encoder Value: ", hang.getCurrentPosition());
                 telemetry.update();
             }
-
             // Stop all motion;
             hang.setPower(0);
-
-
             // Turn off RUN_TO_POSITION
             hang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
         }
     }
 
