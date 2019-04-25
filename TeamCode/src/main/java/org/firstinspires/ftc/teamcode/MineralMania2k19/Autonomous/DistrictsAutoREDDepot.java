@@ -124,6 +124,7 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
         //coming down from latch
+        liftEncoders(1,6.8, 10);
 
 
         //going out of latch
