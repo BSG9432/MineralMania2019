@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous;
+package org.firstinspires.ftc.teamcode.MineralMania2k19.Testing;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
-@Autonomous(name="DistrictsAutoREDDepot", group="Pushbot")
-public class DistrictsAutoREDDepot extends LinearOpMode {
+@Autonomous(name="testing_forward", group="Pushbot")
+public class testing_forward extends LinearOpMode {
     /* Declare OpMode members. */
 
     public DcMotor frontRight;
@@ -114,7 +114,6 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         imu.initialize(parameters);
 
         //AutoTransitioner from Team 7203 KNO3 Robotics
-        AutoTransitioner.transitionOnStop(this, "OOFdistrictsTeleOp");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -126,37 +125,10 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
         //coming down from latch
-        liftEncoders(1,7, 10);
+
+        encoderDrive(.2, -70, 70, 100.0);
 
 
-        //going out of latch
-        encoderDrive(DRIVE_SPEED, -4, 4, 2.0);
-        //NOTA BENE TO TEST THIS ROTATION
-        rotate(120, .4);
-        encoderDrive(.3, -40, 40, 5.0);
-
-        rotate(90, .5);
-
-        encoderDrive(DRIVE_SPEED, 18, -18, 2.0);
-
-        rightPan.setPosition(.5);
-        leftPan.setPosition(.5);
-        sleep(1500);
-
-        encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-       intake.setPower(-.6);
-       sleep(1500);
-
-        rotate(180, .4);
-        //encoderDrive(DRIVE_SPEED,-13, 13, 2.0);
-        //rotate(90,.4);
-        //encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-        //intake.setPower(-.7);
-        //sleep(1500);
-
-        //encoderDrive(DRIVE_SPEED,110, -110, 8.5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
