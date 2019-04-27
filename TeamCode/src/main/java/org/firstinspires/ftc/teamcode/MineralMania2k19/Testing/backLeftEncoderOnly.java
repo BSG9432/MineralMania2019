@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous;
+package org.firstinspires.ftc.teamcode.MineralMania2k19.Testing;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,12 +12,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
-@Autonomous(name="DistrictsAutoREDDepot", group="Pushbot")
-public class DistrictsAutoREDDepot extends LinearOpMode {
-    /* Declare OpMode members. */
-
+@Autonomous(name="Y U DO THIS ENCODER")
+public class backLeftEncoderOnly extends LinearOpMode{
     public DcMotor frontRight;
     public DcMotor frontLeft;
     public DcMotor backRight;
@@ -74,6 +72,9 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
@@ -114,7 +115,6 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         imu.initialize(parameters);
 
         //AutoTransitioner from Team 7203 KNO3 Robotics
-        AutoTransitioner.transitionOnStop(this, "OOFdistrictsTeleOp");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -126,39 +126,10 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
         //coming down from latch
-        liftEncoders(1,7, 10);
+
+        leftEncoder(1, 14,  100.0);
 
 
-        //going out of latch
-        encoderDrive(DRIVE_SPEED, -4, 4, 2.0);
-        //NOTA BENE TO TEST THIS ROTATION
-        rotate(120, .4);
-        encoderDrive(.3, -40, 40, 5.0);
-
-        encoderDrive(.5,-12,-12, 4.0);
-
-        encoderDrive(DRIVE_SPEED, 18, -18, 2.0);
-
-        rightPan.setPosition(.5);
-        leftPan.setPosition(.5);
-        sleep(1500);
-
-        encoderDrive(DRIVE_SPEED, 4, -4, .5);
-
-        encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-       intake.setPower(-.6);
-       sleep(1500);
-
-        //rotate(180, .4);
-        //encoderDrive(DRIVE_SPEED,-13, 13, 2.0);
-        //rotate(90,.4);
-        //encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-        //intake.setPower(-.7);
-        //sleep(1500);
-
-        //encoderDrive(DRIVE_SPEED,110, -110, 8.5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -175,38 +146,28 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
      *  2) Move runs out of time
      *  3) Driver stops the opmode running.
      */
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
+    public void leftEncoder(double speed,
+                             double inches,
                              double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+        int target;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = frontLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newLeftTarget = backLeft.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = frontRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newRightTarget = backRight.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            target = backLeft.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
 
-            frontLeft.setTargetPosition(newLeftTarget);
-            frontRight.setTargetPosition(newRightTarget);
-            backLeft.setTargetPosition(newLeftTarget);
-            backRight.setTargetPosition(newRightTarget);
+
+            backLeft.setTargetPosition(target);
 
             // Turn On RUN_TO_POSITION
-            frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
-            frontLeft.setPower(Math.abs(speed));
-            frontRight.setPower(Math.abs(speed));
+
             backLeft.setPower(Math.abs(speed));
-            backRight.setPower(Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
@@ -216,29 +177,20 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (frontRight.isBusy() && frontLeft.isBusy() && backRight.isBusy() && backLeft.isBusy())) {
+                    (backLeft.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        frontRight.getCurrentPosition(),
-                        frontLeft.getCurrentPosition(),
-                        backRight.getCurrentPosition(),
-                        backLeft.getCurrentPosition());
+                telemetry.addData("Path1", target);
+                telemetry.addData("Path2",backLeft.getCurrentPosition());
+
 
                 telemetry.update();
             }
 
             // Stop all motion;
-            frontRight.setPower(0);
-            frontLeft.setPower(0);
-            backRight.setPower(0);
             backLeft.setPower(0);
 
             // Turn off RUN_TO_POSITION
-            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
@@ -305,15 +257,11 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         {   // turn right.
             leftPower = -power;
             rightPower = -.3;
-            telemetry.addLine("TURN BUT THE OTHER ONE");
-            telemetry.update();
         }
         else if (degrees > 0)
         {   // turn left.
             leftPower = .3;
             rightPower = power;
-            telemetry.addLine("TURN YEH");
-            telemetry.update();
         }
         else return;
 
@@ -347,4 +295,3 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         resetAngle();
     }
 }
-

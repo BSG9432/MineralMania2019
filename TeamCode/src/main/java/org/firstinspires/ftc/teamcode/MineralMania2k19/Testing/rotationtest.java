@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
-@Autonomous(name="DistrictsAutoREDDepot", group="Pushbot")
-public class DistrictsAutoREDDepot extends LinearOpMode {
+@Autonomous(name="rotationtest", group="Pushbot")
+public class rotationtest extends LinearOpMode {
     /* Declare OpMode members. */
 
     public DcMotor frontRight;
@@ -114,7 +114,6 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         imu.initialize(parameters);
 
         //AutoTransitioner from Team 7203 KNO3 Robotics
-        AutoTransitioner.transitionOnStop(this, "OOFdistrictsTeleOp");
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -126,39 +125,17 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
         //coming down from latch
-        liftEncoders(1,7, 10);
 
 
-        //going out of latch
-        encoderDrive(DRIVE_SPEED, -4, 4, 2.0);
-        //NOTA BENE TO TEST THIS ROTATION
-        rotate(120, .4);
-        encoderDrive(.3, -40, 40, 5.0);
 
-        encoderDrive(.5,-12,-12, 4.0);
 
-        encoderDrive(DRIVE_SPEED, 18, -18, 2.0);
+      //  rotate(270, .5);
+       // rotateCCW(90, .5);
+        rotate(45, .2);//CCW
+        rotate(-45, .2);//CW
 
-        rightPan.setPosition(.5);
-        leftPan.setPosition(.5);
-        sleep(1500);
 
-        encoderDrive(DRIVE_SPEED, 4, -4, .5);
 
-        encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-       intake.setPower(-.6);
-       sleep(1500);
-
-        //rotate(180, .4);
-        //encoderDrive(DRIVE_SPEED,-13, 13, 2.0);
-        //rotate(90,.4);
-        //encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-        //intake.setPower(-.7);
-        //sleep(1500);
-
-        //encoderDrive(DRIVE_SPEED,110, -110, 8.5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
@@ -291,6 +268,51 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         double heading = angles.firstAngle;
         return heading;
     }
+
+    private void rotateCCW(int degrees, double power){
+        resetAngle();
+       double angles = getHeading();
+       angles = angles + 180;
+
+       double rightPower;
+
+        if (degrees > 0 )
+        {   // turn CCW.
+            frontLeft.setPower(0);
+            backLeft.setPower(0);
+            frontRight.setPower(power);
+            backRight.setPower(power);
+            telemetry.addLine("TURN LEFT");
+            telemetry.update();
+        }
+
+
+        // rotate until turn is completed.
+        if (degrees < 0)
+        {
+            // On right turn we have to get off zero first.
+            while (opModeIsActive() && getHeading() == 0) {}
+
+            while (opModeIsActive() && getHeading() > degrees) {}
+        }
+        else    // left turn.
+            while (opModeIsActive() && getHeading() < degrees) {}
+
+        // turn the motors off.
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+
+        // wait for rotation to stop.
+        sleep(1000);
+
+        // reset angle tracking on new heading.
+        resetAngle();
+    }
+
+
+
     private void rotate(int degrees, double power)
     {
         double  leftPower, rightPower;
