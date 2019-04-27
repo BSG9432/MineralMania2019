@@ -28,6 +28,7 @@ package org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous;/* Copyright 
  */
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -35,6 +36,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Robot;
 //Oh this was the one I made when I finally figured out encoders
+@Disabled
 @Autonomous(name="DistrictsAutoA", group="Pushbot")
 public class DistrictsAuto extends LinearOpMode {
     /* Declare OpMode members. */

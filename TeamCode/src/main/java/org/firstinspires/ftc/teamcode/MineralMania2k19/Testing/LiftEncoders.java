@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Disabled
 @Autonomous(name="JetEncoders", group="")
 //6 INCHES UP
 public class LiftEncoders extends LinearOpMode  {

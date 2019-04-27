@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous;
+package org.firstinspires.ftc.teamcode.MineralMania2k19.Testing;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
+@Disabled
 @Autonomous(name="rotationtest", group="Pushbot")
 public class rotationtest extends LinearOpMode {
     /* Declare OpMode members. */
