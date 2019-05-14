@@ -91,8 +91,8 @@ public class districtsTeleOpA extends OpMode {
 
         //yeeting the Mobile Cargo Bay
         if (gamepad1.a) {
-            rightPan.setPosition(.5);
-            leftPan.setPosition(.5);
+            rightPan.setPosition(.3);
+            leftPan.setPosition(.7);
         }
 
         if (gamepad1.y) {
