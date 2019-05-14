@@ -129,36 +129,36 @@ public class DistrictsAutoREDDepot extends LinearOpMode {
         liftEncoders(1,7, 10);
 
 
-        //going out of latch
+        //rotating out of latch
         encoderDrive(DRIVE_SPEED, -4, 4, 2.0);
         //NOTA BENE TO TEST THIS ROTATION
         rotate(120, .4);
+
+        //move forward for 40 inches
         encoderDrive(.3, -40, 40, 5.0);
 
+        //rotate clockwise approximately 90 degrees
         encoderDrive(.5,-12,-12, 4.0);
 
+        //move backwards 18 seconds towards cargo
         encoderDrive(DRIVE_SPEED, 18, -18, 2.0);
 
+        //grabbing mobile cargo bay using cargo bay grabber
         rightPan.setPosition(.5);
         leftPan.setPosition(.5);
         sleep(1500);
 
+        //Backing up to fully grab mobile cargo bay
         encoderDrive(DRIVE_SPEED, 4, -4, .5);
 
+        //move forward for 63 inches into depot
         encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
 
+        //out-taking pre-loaded minerals
        intake.setPower(-.6);
        sleep(1500);
 
-        //rotate(180, .4);
-        //encoderDrive(DRIVE_SPEED,-13, 13, 2.0);
-        //rotate(90,.4);
-        //encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
 
-        //intake.setPower(-.7);
-        //sleep(1500);
-
-        //encoderDrive(DRIVE_SPEED,110, -110, 8.5);
 
         telemetry.addData("Path", "Complete");
         telemetry.update();

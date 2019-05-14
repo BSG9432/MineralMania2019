@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous;
 
+import android.drm.DrmRights;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,8 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.AutoTransitioner;
 
-@Autonomous(name="DistrictsAutoBLUEDepot", group="Pushbot")
-public class DistrictsAutoBLUEDepot extends LinearOpMode {
+import static org.firstinspires.ftc.teamcode.MineralMania2k19.Autonomous.DistrictsAutoBLUEDepot.COUNTS_PER_INCH_HANG;
+
+@Autonomous(name="DistrictsAutoLand", group="Pushbot")
+public class DistrictsAutoLand extends LinearOpMode {
     /* Declare OpMode members. */
 
     public DcMotor frontRight;
@@ -39,15 +43,8 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = .55;
-    static final double TURN_SPEED = 0.3;
-
-    //HANG CONSTANTS
-    static final double     DRIVE_GEAR_REDUCTION_HANG    = 3.0 ;     // GEAR RATIO
-    static final double     WHEEL_DIAMETER_INCHES_HANG   = .82 ;     // WHEEL DIAMETER, THIS CASE PINION GEAR
-    static final double COUNTS_PER_INCH_HANG = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION_HANG) /
-            (WHEEL_DIAMETER_INCHES_HANG * 3.1415);
-
+    static final double DRIVE_SPEED = 0.65;
+    static final double TURN_SPEED = 0.5;
 
 
     @Override
@@ -90,8 +87,6 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-
-
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
                 frontLeft.getCurrentPosition(),
@@ -125,8 +120,9 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
 
         //NOTA BENE TO ADJUST THE TIMEOUTS
 
+
         //coming down from latch
-        liftEncoders(1,7, 10);
+        liftEncoders(1, 7, 10);
 
 
         //rotating out of latch
@@ -134,35 +130,9 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
         //NOTA BENE TO TEST THIS ROTATION
         rotate(33, .4);
 
-        //move forward for 40 inches
-        encoderDrive(.3, -40, 40, 5.0);
-
-        //rotate counter-clockwise approximately 90 degrees
-        encoderDrive(.5,12,12, 4.0);
-
-        //move backwards 18 seconds towards cargo
-        encoderDrive(DRIVE_SPEED, 18, -18, 2.0);
-
-        //grabbing mobile cargo bay using cargo bay grabber
-        rightPan.setPosition(.5);
-        leftPan.setPosition(.5);
-        sleep(1500);
-
-        //Backing up to fully secure mobile cargo bay
-        encoderDrive(DRIVE_SPEED, 4, -4, .5);
-
-        //move forward for 63 inches into depot
-        encoderDrive(DRIVE_SPEED, -63, 63, 6.0);
-
-        //out-taking pre-loaded minerals
-        intake.setPower(-.6);
-        sleep(1500);
-
-
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
-
 
 
     }
@@ -245,12 +215,123 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
         }
     }
 
+    public void lift(double speed,
+                     double inches,
+                     double timeoutS) {
+        int newHangTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newHangTarget = hang.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+
+
+            hang.setTargetPosition(newHangTarget);
+
+            // Turn On RUN_TO_POSITION
+            hang.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            hang.setPower(Math.abs(speed));
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (hang.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newHangTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        hang.getCurrentPosition());
+
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            hang.setPower(0);
+
+
+            // Turn off RUN_TO_POSITION
+            hang.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    private void resetAngle() {
+        imuAngle = 0;
+    }
+
+    public double getHeading() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC,
+                AxesOrder.ZYX, AngleUnit.DEGREES);
+        double heading = angles.firstAngle;
+        return heading;
+    }
+
+    private void rotate(int degrees, double power) {
+        double leftPower, rightPower;
+
+        // restart imu movement tracking.
+        resetAngle();
+
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
+        // clockwise (right).
+
+        if (degrees < 0) {   // turn right.
+            leftPower = -power;
+            rightPower = 0;
+        } else if (degrees > 0) {   // turn left.
+            leftPower = 0;
+            rightPower = -power;
+        } else return;
+
+        // set power to rotate.
+        frontLeft.setPower(leftPower);
+        backLeft.setPower(leftPower);
+        frontRight.setPower(rightPower);
+        backRight.setPower(rightPower);
+
+        // rotate until turn is completed.
+        if (degrees < 0) {
+            // On right turn we have to get off zero first.
+            while (opModeIsActive() && getHeading() == 0) {
+            }
+
+            while (opModeIsActive() && getHeading() > degrees) {
+            }
+        } else    // left turn.
+            while (opModeIsActive() && getHeading() < degrees) {
+            }
+
+        // turn the motors off.
+        frontLeft.setPower(0);
+        backLeft.setPower(0);
+        frontRight.setPower(0);
+        backRight.setPower(0);
+
+        // wait for rotation to stop.
+        sleep(1000);
+
+        // reset angle tracking on new heading.
+        resetAngle();
+    }
+
     public void liftEncoders(double speed, double numOfInches, double timeoutS) {
         int target;
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
             // Determine new target position, and pass to motor controller
-            target = hang.getCurrentPosition() + (int)(numOfInches * COUNTS_PER_INCH_HANG);
+            target = hang.getCurrentPosition() + (int) (numOfInches * COUNTS_PER_INCH_HANG);
 
             hang.setTargetPosition(target);
 
@@ -266,9 +347,9 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) && hang.isBusy()&& hang.getCurrentPosition()<target) {
+                    (runtime.seconds() < timeoutS) && hang.isBusy() && hang.getCurrentPosition() < target) {
                 // Display it for the driver.
-                telemetry.addData("Target Encoder Value: ",   target);
+                telemetry.addData("Target Encoder Value: ", target);
                 telemetry.addData("Current Encoder Value: ", hang.getCurrentPosition());
                 telemetry.update();
             }
@@ -279,73 +360,5 @@ public class DistrictsAutoBLUEDepot extends LinearOpMode {
 
         }
     }
-
-    private void resetAngle()
-    {
-        imuAngle = 0;
-    }
-
-    public double getHeading() {
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC,
-                AxesOrder.ZYX, AngleUnit.DEGREES);
-        double heading = angles.firstAngle;
-        return heading;
-    }
-    private void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
-
-        // restart imu movement tracking.
-        resetAngle();
-
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
-
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = -power;
-            rightPower = -.3;
-            telemetry.addLine("TURN BUT THE OTHER ONE");
-            telemetry.update();
-        }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = .3;
-            rightPower = power;
-            telemetry.addLine("TURN YEH");
-            telemetry.update();
-        }
-        else return;
-
-        // set power to rotate.
-        frontLeft.setPower(leftPower);
-        backLeft.setPower(leftPower);
-        frontRight.setPower(rightPower);
-        backRight.setPower(rightPower);
-
-        // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
-            while (opModeIsActive() && getHeading() == 0) {}
-
-            while (opModeIsActive() && getHeading() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getHeading() < degrees) {}
-
-        // turn the motors off.
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        frontRight.setPower(0);
-        backRight.setPower(0);
-
-        // wait for rotation to stop.
-        sleep(1000);
-
-        // reset angle tracking on new heading.
-        resetAngle();
-    }
 }
-
 
